@@ -1,0 +1,19 @@
+# FlixDB storage config YAML
+
+# Maximum number of concurrent client connections that can be supported by
+# the server
+max_concurrent_client_connections: 10
+
+# Maximum memory in *bytes* for the in-memory keyspace. This includes memory for all the
+# data structures used to maintain the keyspace
+# 1. Setting it to 0 will use all available JVM memory
+# 2. NOTE: The size needs to be >400 bytes as the data structures required use a
+#    minimum of 400 bytes.
+max_keyspace_memory: 1000
+
+# The flixDB server listens on this port
+server_port: 14567
+
+# Server log levels. Change this to ALL to see the memory allocation
+# stats on the server console. All logs goto console for simplicity
+log_level: INFO

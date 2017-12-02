@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Use JAVA_HOME if set, otherwise look for java in PATH
+if [ -n "$JAVA_HOME" ]; then
+    for java in "$JAVA_HOME"/bin/amd64/java "$JAVA_HOME"/bin/java; do
+        if [ -x "$java" ]; then
+            JAVA="$java"
+            break
+        fi
+    done
+else
+    JAVA=java
+fi
+
+if [ -z ${JAVA} ] ; then
+    echo Unable to find java executable. Check JAVA_HOME and PATH environment variables. >&2
+    exit 1;
+fi
+
+# Set flixDB HOME
+FLIXDB_HOME="$(dirname "$(pwd)")"
+
+# Set class path
+CLASSPATH="$FLIXDB_HOME/src:$FLIXDB_HOME/lib/*"
+
+# Set the main class
+classname="com.karthik.main.flixDB.DBServer"
+
+# enable assertions.  disabling this in production will give a modest
+# performance benefit (around 5%).
+JVM_OPTS="-ea"
+
+# Add Jamm java agent for memory instrumentation and memory management
+JVM_OPTS="$JVM_OPTS -javaagent:"$FLIXDB_HOME/lib/jamm-0.3.2.jar""
+
+# Server configuration file
+CONF_FILE="$FLIXDB_HOME/conf/flixDB.yaml"
+
+# ${JAVA} -ea -javaagent:../lib/jamm-0.3.2.jar -classpath ../src DBServer
+${JAVA} ${JVM_OPTS} -cp ${CLASSPATH} ${classname} ${CONF_FILE}
